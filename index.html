@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="COPAVE - Comité de Participación Vecinal Villas del Campo, Calimaya. Por los derechos de todos.">
+    <title>COPAVE - Villas del Campo | Comité de Participación Vecinal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: auto;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #1a5c28 0%, #2d7e3e 60%, #4caf50 100%);
+            color: white;
+            padding: 18px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            padding: 4px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover { transform: rotate(5deg) scale(1.05); }
+
+        .header-text h1 {
+            font-size: 2em;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .header-text p {
+            font-size: 1em;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .header-slogan {
+            font-style: italic;
+            font-size: 0.95em;
+            opacity: 0.85;
+            border-left: 3px solid rgba(255,255,255,0.5);
+            padding-left: 12px;
+        }
+
+        /* ===== PARALLAX ===== */
+        .parallax-section {
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            will-change: transform;
+            transform: translateZ(0);
+            z-index: 0;
+        }
+
+        .parallax-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(20, 70, 30, 0.65);
+            z-index: 1;
+        }
+
+        .parallax-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 60px 30px;
+            max-width: 900px;
+        }
+
+        .parallax-content h2 {
+            font-size: clamp(2em, 5vw, 3.5em);
+            font-weight: 900;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .parallax-content p {
+            font-size: clamp(1em, 2.5vw, 1.3em);
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+            font-weight: 300;
+        }
+
+        .parallax-1 .parallax-bg { background-image: url("parallax1.webp"); }
+        .parallax-2 .parallax-bg { background-image: url("parallax2.webp"); }
+        .parallax-3 .parallax-bg { background-image: url("parallax3.jpeg"); }
+
+        .parallax-1 { min-height: 600px; }
+        .parallax-2 { min-height: 400px; }
+        .parallax-3 { min-height: 400px; }
+
+        /* ===== BOTONES PRINCIPALES ===== */
+        .main-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f5f7fa;
+        }
+
+        .button-card {
+            background: white;
+            border-radius: 18px;
+            padding: 40px 25px;
+            text-align: center;
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            border-bottom: 4px solid transparent;
+        }
+
+        .button-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 16px 35px rgba(45,126,62,0.2);
+            border-bottom: 4px solid #4caf50;
+        }
+
+        .button-icon {
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, #1a5c28 0%, #4caf50 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(45,126,62,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .button-card:hover .button-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .button-card h3 {
+            font-size: 1.4em;
+            color: #2d7e3e;
+        }
+
+        .button-card p { color: #666; font-size: 0.95em; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2d7e3e 0%, #4caf50 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(45,126,62,0.3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(45,126,62,0.4);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            animation: fadeInOverlay 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            overflow: hidden;
+            animation: slideUpModal 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUpModal {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1a5c28 0%, #2d7e3e 60%, #4caf50 100%);
+            color: white;
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .modal-header-text h3 {
+            font-size: 1.4em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-header-text p {
+            font-size: 0.9em;
+            opacity: 0.85;
+            font-weight: 300;
+            margin-top: 2px;
+        }
+
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.3em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.35);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            min-height: 500px;
+        }
+
+        /* Loader mientras carga el iframe */
+        .modal-loader {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8fdf9;
+            gap: 16px;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e8f5e9;
+            border-top: 4px solid #2d7e3e;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #2d7e3e;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border: none;
+            display: block;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== REDES SOCIALES ===== */
+        .social-section {
+            background: linear-gradient(135deg, #f0f7f1 0%, #e8f5e9 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .social-section h2 {
+            font-size: 2em;
+            color: #2d7e3e;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .social-section p {
+            color: #666;
+            margin-bottom: 45px;
+            font-size: 1.05em;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .social-link:hover { transform: translateY(-12px) scale(1.1); }
+
+        .social-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: block;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .social-link:hover .social-icon { box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+
+        .social-name {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #2d7e3e;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, #1a5c28 0%, #2d7e3e 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        footer p { margin: 8px 0; opacity: 0.9; }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 2px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            border-bottom: 1px solid white;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 3px;
+            background: rgba(255,255,255,0.4);
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        .footer-copy {
+            font-size: 0.85em;
+            opacity: 0.65;
+            margin-top: 20px;
+        }
+
+        /* ===== MODAL AVISO DE PRIVACIDAD ===== */
+        .modal-box--privacidad {
+            max-width: 750px;
+        }
+
+        .modal-body--text {
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .privacidad-content {
+            padding: 28px 32px;
+            color: #333;
+            line-height: 1.75;
+        }
+
+        .privacidad-fecha {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .privacidad-content h4 {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #1a5c28;
+            margin: 22px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+
+        .privacidad-content h4:first-of-type { margin-top: 0; }
+
+        .privacidad-content p {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        .privacidad-content ul {
+            margin: 6px 0 10px 20px;
+        }
+
+        .privacidad-content ul li {
+            font-size: 0.95em;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        .privacidad-content a {
+            color: #2d7e3e;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dotted #2d7e3e;
+        }
+
+        .privacidad-content a:hover {
+            border-bottom: 1px solid #2d7e3e;
+        }
+
+        .privacidad-footer {
+            margin-top: 28px;
+            padding: 16px 20px;
+            background: #f0f7f1;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .privacidad-footer p {
+            font-size: 0.88em;
+            color: #555;
+            margin: 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .privacidad-content { padding: 20px 18px; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .header-text h1 { font-size: 1.6em; }
+            .parallax-content h2 { font-size: 1.8em; }
+            .main-buttons { grid-template-columns: 1fr; padding: 40px 15px; }
+            .social-icons { gap: 20px; }
+            .social-icon { width: 75px; height: 75px; }
+            .header-slogan { display: none; }
+            .modal-box { max-height: 95vh; border-radius: 18px; }
+            .modal-body { min-height: 420px; }
+            .modal-iframe { min-height: 420px; }
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .button-card { animation: fadeInUp 0.6s ease-out backwards; }
+        .button-card:nth-child(1) { animation-delay: 0.1s; }
+        .button-card:nth-child(2) { animation-delay: 0.2s; }
+        .button-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .social-link { animation: fadeInUp 0.5s ease-out backwards; }
+        .social-link:nth-child(1) { animation-delay: 0.1s; }
+        .social-link:nth-child(2) { animation-delay: 0.2s; }
+        .social-link:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+		<div class="logo-container">
+		<!-- LOGO COPAVE -->
+		<img
+		src="logo_copave_2026.webp"
+		alt="Logo COPAVE"
+		class="logo"
+		>
+		<div class="header-text">
+		<h1>COPAVE</h1>
+		<p>Villas del Campo</p>
+		</div>
+		</div>
+                <div class="header-slogan">
+                    <p>Por los derechos de todos</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== PARALLAX 1: HERO ===== -->
+    <section class="parallax-section parallax-1">
+        <div class="parallax-bg" data-speed="0.4"></div>
+        <div class="parallax-overlay"></div>
+        <div class="parallax-content">
+            <h2>Comité de Participación Vecinal</h2>
+            <p>Por los derechos de todos.</p>
+            <p>Más de cinco años trabajando en pro de Villas del Campo, sin intereses personales y con un solo objetivo: construir juntos la mejor versión de nuestra comunidad.</p>
+        </div>
+    </section>
+
+    <!-- ===== BOTONES PRINCIPALES ===== -->
+    <section class="main-buttons">
+
+       <!-- BOTÓN COPAVÍN -->
+	<a href="https://t.me/copavebot" target="_blank" class="button-card">
+            <div class="button-icon">💬</div>
+            <div>
+                <h3>Copavín</h3>
+                <p>Conéctate, resuelve tus dudas y regístrate desde nuestro asistente virtual en Telegram</p>
+            </div>
+            <span class="btn-primary">Iniciar Chat</span>
+        </a>
+
+        <!-- BOTÓN REGISTRO -->
+        <a href="https://app.copave.org/webhook/registro-socio" class="button-card">
+            <div class="button-icon">📝</div>
+            <div>
+                <h3>Registro</h3>
+                <p>Si aún no tienes Telegram, puedes completar tu registro desde aquí</p>
+            </div>
+            <span class="btn-primary">Registrarse</span>
+        </a>
+
+	<!-- BOTÓN DONACIÓN -->
+        <a href="https://donate.stripe.com/aFa6oH5xzgyU0tS9dIcEw00" class="button-card">
+            <div class="button-icon">🔔</div>
+            <div>
+                <h3>Constitución COPAVE</h3>
+                <p>Si eres vecino de villas y deseas apoyar esta iniciativa puedes hacerlo desde aquí.</p>
+            </div>
+            <span class="btn-primary">Donar</span>
+        </a>
+
+    </section>
+
+    <!-- ===== PARALLAX 2: COMUNIDAD ===== -->
+    <section class="parallax-section parallax-2">
+        <div class="parallax-bg" data-speed="0.35"></div>
+        <div class="parallax-overlay"></div>
+        <div class="parallax-content">
+            <h2>Nuestra Comunidad</h2>
+            <p>Promovemos la participación ciudadana activa y el bienestar de todos los vecinos de Villas del Campo.</p>
+        </div>
+    </section>
+
+    <!-- ===== REDES SOCIALES ===== -->
+    <!-- CAMBIO: Se eliminaron Telegram y WhatsApp. Los íconos ahora usan archivos PNG locales. -->
+    <section class="social-section">
+        <h2>Síguenos en Redes Sociales</h2>
+        <p>Mantente informado de todas nuestras actividades y novedades</p>
+
+        <div class="social-icons">
+
+            <a href="https://www.facebook.com/copavevillas" target="_blank" rel="noopener noreferrer" class="social-link">
+                <img src="logofacebook.png" alt="Facebook" class="social-icon">
+                <span class="social-name">Facebook</span>
+            </a>
+
+            <a href="https://www.tiktok.com/@copavemexico" target="_blank" rel="noopener noreferrer" class="social-link">
+                <img src="logotiktok.jpg" alt="TikTok" class="social-icon">
+                <span class="social-name">TikTok</span>
+            </a>
+
+            <a href="https://youtube.com/@copavevillas9764" target="_blank" rel="noopener noreferrer" class="social-link">
+                <img src="logoyoutube.png" alt="YouTube" class="social-icon">
+                <span class="social-name">YouTube</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- ===== PARALLAX 3: CIERRE ===== -->
+    <section class="parallax-section parallax-3">
+        <div class="parallax-bg" data-speed="0.3"></div>
+        <div class="parallax-overlay"></div>
+        <div class="parallax-content">
+            <h2>Juntos Somos Más Fuertes</h2>
+            <p>Tu participación hace la diferencia. Únete a COPAVE y sé parte del cambio en nuestra comunidad.</p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <p><strong>COPAVE &mdash; Comité de Participación Vecinal</strong></p>
+            <p>Por los derechos de todos</p>
+            <p><em>Villas del Campo, Calimaya, Estado de México</em></p>
+            <div class="footer-divider"></div>
+            <div class="footer-links">
+                <a href="mailto:hola@copave.org">Contacto</a>
+                <a href="#" onclick="abrirModalPrivacidad(); return false;">Aviso de Privacidad</a>
+            </div>
+            <p class="footer-copy">&copy; 2025 COPAVE. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- ===== MODAL REGISTRO ===== -->
+    <div class="modal-overlay" id="modalRegistro" onclick="cerrarModalSiOverlay(event)">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-header-text">
+                    <h3>📝 Registro Vecinal</h3>
+                    <p>Completa tu cuestionario de registro en COPAVE</p>
+                </div>
+                <button class="modal-close" onclick="cerrarModal()" title="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-loader" id="modalLoader">
+                    <div class="loader-spinner"></div>
+                    <span class="loader-text">Cargando formulario...</span>
+                </div>
+                <iframe
+                    id="modalIframe"
+                    class="modal-iframe"
+                    src=""
+                    title="Formulario de registro COPAVE"
+                    onload="ocultarLoader()"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL AVISO DE PRIVACIDAD ===== -->
+    <div class="modal-overlay" id="modalPrivacidad" onclick="cerrarModalPrivacidadSiOverlay(event)">
+        <div class="modal-box modal-box--privacidad">
+            <div class="modal-header">
+                <div class="modal-header-text">
+                    <h3>🔒 Aviso de Privacidad</h3>
+                    <p>COPAVE — Comité de Participación Vecinal</p>
+                </div>
+                <button class="modal-close" onclick="cerrarModalPrivacidad()" title="Cerrar">✕</button>
+            </div>
+            <div class="modal-body modal-body--text">
+                <div class="privacidad-content">
+
+                    <p class="privacidad-fecha">Última actualización: marzo 2026</p>
+
+                    <h4>1. Responsable del Tratamiento</h4>
+                    <p><strong>Comité de participación vecinal</strong> (en adelante "COPAVE") es la responsable del tratamiento de los datos personales que usted nos proporciona a través del formulario de registro disponible en nuestro sitio web. Para cualquier consulta relacionada con este aviso, puede contactarnos en:</p>
+                    <ul>
+                        <li>Correo electrónico: <a href="mailto:hola@copave.org">hola@copave.org</a></li>
+                        <li>Sitio web: <a href="https://www.copave.org" target="_blank" rel="noopener">www.copave.org</a></li>
+                        <li>Teléfono: <a href="tel:7223296160">722 329 6160</a></li>
+                    </ul>
+
+                    <h4>2. Datos Personales que Recopilamos</h4>
+                    <p>Con motivo de su registro en nuestra comunidad, recabamos los siguientes datos personales:</p>
+                    <ul>
+                        <li>Nombre completo</li>
+                        <li>Correo electrónico</li>
+                        <li>Número de teléfono</li>
+                        <li>Dirección o ubicación (en su caso)</li>
+                        <li>Fecha de nacimiento</li>
+                    </ul>
+                    <p>No recabamos datos personales sensibles en el sentido del artículo 3, fracción VI de la <em>Ley Federal de Protección de Datos Personales en Posesión de los Particulares</em> (LFPDPPP).</p>
+
+                    <h4>3. Finalidades del Tratamiento</h4>
+                    <p>Sus datos personales serán utilizados para las siguientes <strong>finalidades primarias:</strong></p>
+                    <ul>
+                        <li>Procesar su solicitud de registro e integración a la comunidad COPAVE.</li>
+                        <li>Contactarle para confirmar, actualizar o dar seguimiento a su registro.</li>
+                        <li>Gestionar la comunicación interna entre los miembros de la comunidad.</li>
+                        <li>Cumplir con obligaciones legales aplicables.</li>
+                    </ul>
+                    <p><strong>Finalidades secundarias</strong> (no indispensables):</p>
+                    <ul>
+                        <li>Enviarle información sobre actividades, eventos o avisos de la comunidad.</li>
+                        <li>Mejorar nuestros servicios y canales de comunicación.</li>
+                    </ul>
+                    <p>Si no desea que sus datos sean tratados para las finalidades secundarias, puede manifestarlo enviando un correo a la dirección indicada en la sección 1.</p>
+
+                    <h4>4. Transferencia de Datos</h4>
+                    <p>COPAVE <strong>no transfiere, vende ni cede</strong> sus datos personales a terceros sin su consentimiento, salvo en los casos previstos por la LFPDPPP o cuando sea requerido por autoridad competente.</p>
+
+                    <h4>5. Derechos ARCO</h4>
+                    <p>Usted tiene derecho a <strong>Acceder, Rectificar, Cancelar u Oponerse</strong> al tratamiento de sus datos personales (derechos ARCO). Para ejercer estos derechos, envíe una solicitud a nuestro correo indicando:</p>
+                    <ul>
+                        <li>Nombre completo y datos de contacto.</li>
+                        <li>Descripción clara del derecho que desea ejercer.</li>
+                        <li>Documentación que acredite su identidad.</li>
+                    </ul>
+                    <p>Le daremos respuesta en un plazo máximo de <strong>20 días hábiles</strong> a partir de la recepción de su solicitud.</p>
+
+                    <h4>6. Cookies y Tecnologías de Seguimiento</h4>
+                    <p>Nuestro sitio web puede utilizar cookies propias de la plataforma con fines técnicos y de funcionamiento. No utilizamos cookies de seguimiento publicitario de terceros de forma propia. Para gestionar las cookies puede consultar la configuración de su navegador.</p>
+
+                    <h4>7. Cambios al Aviso de Privacidad</h4>
+                    <p>COPAVE se reserva el derecho de modificar este aviso en cualquier momento. Cualquier cambio será comunicado a través de este mismo sitio web. Le recomendamos revisarlo periódicamente.</p>
+
+                    <div class="privacidad-footer">
+                        <p>El presente aviso se emite en cumplimiento de la <em>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</em> y su Reglamento, publicados en el Diario Oficial de la Federación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ─── MODAL REGISTRO ───────────────────────────────────────────
+        const URL_FORMULARIO = 'https://www.copave.org/registro';
+        const URL_AVISODEPRIVACIDAD = 'https://www.copave.org/avisodeprivacidad';
+
+        function abrirModal() {
+            const modal  = document.getElementById('modalRegistro');
+            const iframe = document.getElementById('modalIframe');
+            const loader = document.getElementById('modalLoader');
+
+            loader.classList.remove('hidden');
+            iframe.src = URL_FORMULARIO;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            const modal  = document.getElementById('modalRegistro');
+            const iframe = document.getElementById('modalIframe');
+            const loader = document.getElementById('modalLoader');
+
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Resetear iframe para que la próxima vez cargue limpio
+            setTimeout(() => {
+                iframe.src = '';
+                loader.classList.remove('hidden');
+            }, 300);
+        }
+
+        function cerrarModalSiOverlay(event) {
+            // Solo cierra si el click fue en el overlay, no dentro del modal
+            if (event.target === document.getElementById('modalRegistro')) {
+                cerrarModal();
+            }
+        }
+
+        function ocultarLoader() {
+            document.getElementById('modalLoader').classList.add('hidden');
+        }
+
+        // ─── PARALLAX ────────────────────────────────────────
+        (function () {
+            const sections = document.querySelectorAll('.parallax-section');
+
+            function loop() {
+                sections.forEach(function (section) {
+                    var bg   = section.querySelector('.parallax-bg');
+                    if (!bg) return;
+                    var speed  = parseFloat(bg.dataset.speed) || 0.4;
+                    var rect   = section.getBoundingClientRect();
+                    var winH   = window.innerHeight;
+                    var centerOffset = (rect.top + rect.height / 2) - (winH / 2);
+                    bg.style.transform = 'translateY(' + (centerOffset * speed) + 'px)';
+                });
+            }
+
+            function onScroll() { requestAnimationFrame(loop); }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll, { passive: true });
+            loop();
+        })();
+
+        // ─── MODAL AVISO DE PRIVACIDAD ────────────────────────────────
+        function abrirModalPrivacidad() {
+            const modal = document.getElementById('modalPrivacidad');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModalPrivacidad() {
+            const modal = document.getElementById('modalPrivacidad');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function cerrarModalPrivacidadSiOverlay(event) {
+            if (event.target === document.getElementById('modalPrivacidad')) {
+                cerrarModalPrivacidad();
+            }
+        }
+
+        // Cerrar cualquier modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal();
+                cerrarModalPrivacidad();
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Registro Exitoso! | COPAVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --verde-oscuro: #1a5c2a;
+            --verde-medio: #2d7e3e;
+            --verde-claro: #4caf65;
+            --verde-suave: #e8f5ec;
+            --verde-mint: #d4edda;
+            --azul: #1a73e8;
+            --azul-oscuro: #1557b0;
+            --texto: #1a2e1e;
+            --texto-suave: #4a6550;
+            --blanco: #ffffff;
+            --fondo: #f4faf5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+        }
+
+        /* ===== FONDO CON TEXTURA ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(45,126,62,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 90% 100%, rgba(76,175,101,0.10) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== LAYOUT ===== */
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--blanco);
+            border-radius: 24px;
+            box-shadow:
+                0 2px 8px rgba(26,92,42,0.06),
+                0 12px 40px rgba(26,92,42,0.10);
+            max-width: 520px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(32px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== HEADER ===== */
+        .card-header {
+            background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 60%, var(--verde-claro) 100%);
+            padding: 2rem 2rem 3.75rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0; right: 0;
+            height: 32px;
+            background: var(--blanco);
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        }
+
+        .logo-wrap {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .logo-wrap img {
+            width: 92px;
+            height: 92px;
+            object-fit: contain;
+        }
+
+        .card-header h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.25rem;
+            color: var(--blanco);
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+        }
+
+        .card-header p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.75);
+            margin-top: 0.3rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* ===== BODY ===== */
+        .card-body {
+            padding: 1.5rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        /* ===== ICONO ÉXITO ===== */
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--verde-suave), var(--verde-mint));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 16px rgba(45,126,62,0.15);
+            animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+        }
+
+        @keyframes pop {
+            from { opacity: 0; transform: scale(0.5); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* ===== TÍTULO ===== */
+        .success-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.75rem;
+            color: var(--verde-medio);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* ===== MENSAJE ===== */
+        .success-msg {
+            font-size: 0.95rem;
+            color: var(--texto-suave);
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        /* ===== SEPARADOR ===== */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--verde-mint), transparent);
+        }
+
+        /* ===== BOX PARTICIPACIÓN ===== */
+        .participacion-box {
+            background: var(--verde-suave);
+            border: 1px solid var(--verde-mint);
+            border-radius: 14px;
+            padding: 1.1rem 1.25rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .participacion-box p {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--verde-oscuro);
+            margin-bottom: 0.4rem;
+        }
+
+        .participacion-box span {
+            font-size: 0.85rem;
+            color: var(--texto-suave);
+            line-height: 1.6;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-accion {
+            display: block;
+            width: 100%;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .btn-accion:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.06);
+        }
+
+        .btn-accion:active {
+            transform: translateY(0);
+        }
+
+        .btn-verde {
+            background: linear-gradient(135deg, var(--verde-medio), var(--verde-claro));
+            color: var(--blanco);
+            box-shadow: 0 4px 14px rgba(45,126,62,0.30);
+        }
+
+       .btn-azul {
+    		background: linear-gradient(135deg, var(--azul), #4a9af5);
+    		color: var(--blanco);
+    		box-shadow: 0 4px 10px rgba(26,115,232,0.25);
+    		
+}
+        }
+
+        /* ===== FOOTER ===== */
+        .card-footer {
+            padding: 0 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .card-footer p {
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .card-body { padding: 1.25rem 1.25rem 1.5rem; }
+            .card-footer { padding: 0 1.25rem 1.25rem; }
+            .success-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="card-header">
+            <div class="logo-wrap">
+                <img src="logo_copave_2026.png" alt="Logo COPAVE"/>
+            </div>
+            <h2>COPAVE · Villas del Campo Calimaya</h2>
+            <p>Comité de Participación Vecinal</p>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body">
+
+            <div class="success-icon">🎉</div>
+
+            <div class="success-title">¡Registro exitoso!</div>
+
+            <p class="success-msg">
+                Bienvenido/a a COPAVE. Tu registro ha sido recibido correctamente.<br/>
+                Pronto recibirás una confirmación.
+            </p>
+
+            <div class="divider"></div>
+
+            <div class="participacion-box">
+                <p>🤝 ¿Te gustaría contribuir con un donativo para la constitución del COPAVE?</p>
+                <span>Hoy extendemos esta invitación para que juntos podamos construir la mejor versión de Villas del Campo.</span>
+            </div>
+
+<script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1TAlj8EcEVyhEerIyJB0f4LG"
+  publishable-key="pk_live_51TAd7iEcEVyhEerILffcIvPZXtYlbVBMC5rAndnfyBJHoJloi2853ETGcZXpCGFXc66MFSBmQ9iUVwwvG7Kj1jAu00MgrlpQCK"
+>
+</stripe-buy-button>
+
+    </div>
+</div>
+</body>
+</html>
