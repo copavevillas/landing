@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Control de Acceso — COPAVE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:       #080c18;
+    --bg2:      #0d1326;
+    --blue:     #00b4ff;
+    --blue-dim: rgba(0,180,255,0.15);
+    --blue-faint: rgba(0,180,255,0.05);
+    --green:    #00e676;
+    --red:      #ff3d3d;
+    --amber:    #ffb300;
+    --text:     #c8d8f0;
+    --text-dim: #4a7aaa;
+    --border:   rgba(0,180,255,0.18);
+    --mono:     'Share Tech Mono', monospace;
+    --sans:     'Barlow Condensed', sans-serif;
+    --door-ms:  5000; /* ← Tiempo apertura en ms — solo cambiar aquí */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,180,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,255,0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 20px 16px 48px; }
+
+  /* HEADER */
+  .hdr {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .hdr-logo {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border: 2px solid var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; position: relative;
+  }
+  .hdr-logo::after {
+    content: ''; position: absolute; inset: 3px;
+    border: 1px solid rgba(0,180,255,0.3);
+  }
+  .hdr-title { font-size: 22px; font-weight: 700; letter-spacing: 0.06em; color: #e8f4ff; line-height: 1; }
+  .hdr-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.14em; margin-top: 4px; }
+  .hdr-right { margin-left: auto; text-align: right; }
+  .sys-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin: 0 0 4px auto; }
+  .sys-dot.off { background: var(--red); }
+  .sys-lbl { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.1em; }
+
+  /* SECTION LABEL */
+  .sec { font-family: var(--mono); font-size: 10px; color: var(--blue); letter-spacing: 0.16em; margin-bottom: 10px; }
+  .sec::before { content: '▶ '; }
+
+  /* SCANNER */
+  .scanner-card { border: 1.5px solid var(--border); padding: 16px; background: var(--bg2); margin-bottom: 16px; }
+  .video-box {
+    position: relative; background: #030609;
+    height: 260px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,180,255,0.1);
+  }
+  #qr-video { width: 100%; height: 100%; object-fit: cover; display: none; }
+  #qr-canvas { display: none; }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    animation: scanY 2s ease-in-out infinite; display: none;
+  }
+  @keyframes scanY { 0%{top:5%} 50%{top:90%} 100%{top:5%} }
+  .corners span { position: absolute; width: 18px; height: 18px; border-color: var(--blue); border-style: solid; }
+  .corners span:nth-child(1){top:8px;left:8px;border-width:2px 0 0 2px}
+  .corners span:nth-child(2){top:8px;right:8px;border-width:2px 2px 0 0}
+  .corners span:nth-child(3){bottom:8px;left:8px;border-width:0 0 2px 2px}
+  .corners span:nth-child(4){bottom:8px;right:8px;border-width:0 2px 2px 0}
+  .cam-ph { display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--text-dim); }
+  .cam-ph .ico { font-size: 48px; opacity: 0.2; }
+  .cam-ph .txt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; }
+
+  /* Detected flash */
+  .detect-flash {
+    position: absolute; inset: 0;
+    background: rgba(0,180,255,0.18);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.1s;
+  }
+  .detect-flash.show { opacity: 1; }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  .btn {
+    flex: 1; padding: 12px 10px;
+    border: 1.5px solid var(--border);
+    background: var(--blue-faint); color: var(--blue);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    cursor: pointer; transition: background 0.15s;
+    -webkit-appearance: none;
+  }
+  .btn:hover:not(:disabled) { background: var(--blue-dim); }
+  .btn:active:not(:disabled) { opacity: 0.7; }
+  .btn:disabled { opacity: 0.3; cursor: default; }
+  .btn.red { border-color: rgba(255,61,61,0.3); color: var(--red); background: rgba(255,61,61,0.04); }
+  .btn.red:hover:not(:disabled) { background: rgba(255,61,61,0.12); }
+
+  /* MANUAL */
+  .manual-card { border: 1.5px solid var(--border); padding: 16px; background: var(--bg2); margin-bottom: 16px; }
+  .input-row { display: flex; gap: 8px; }
+  .code-input {
+    flex: 1; background: rgba(0,0,0,0.3);
+    border: 1.5px solid rgba(0,180,255,0.2); color: var(--text);
+    padding: 10px 12px; font-family: var(--mono); font-size: 13px;
+    outline: none; transition: border-color 0.15s;
+    -webkit-appearance: none; border-radius: 0;
+  }
+  .code-input:focus { border-color: var(--blue); }
+  .code-input::placeholder { color: #1e3a5a; }
+
+  /* RESULT */
+  .result-card {
+    border: 1.5px solid var(--border); background: var(--bg2);
+    min-height: 130px; margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .result-card.granted { border-color: rgba(0,230,118,0.45); }
+  .result-card.denied  { border-color: rgba(255,61,61,0.45); }
+  .result-idle {
+    display: flex; align-items: center; justify-content: center;
+    height: 130px; font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); letter-spacing: 0.12em;
+  }
+  .result-body { display: none; padding: 16px 18px; }
+  .result-body.show { display: block; animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1} }
+
+  .badge-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .badge {
+    padding: 5px 14px; font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.12em; border: 1px solid;
+  }
+  .badge.checking { border-color: var(--amber); color: var(--amber); background: rgba(255,179,0,0.07); }
+  .badge.granted  { border-color: var(--green); color: var(--green); background: rgba(0,230,118,0.07); }
+  .badge.denied   { border-color: var(--red);   color: var(--red);   background: rgba(255,61,61,0.07); }
+  .r-ts { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-left: auto; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin-bottom: 14px; }
+  .info-f label { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-dim); margin-bottom: 3px; }
+  .info-f span { font-size: 14px; color: var(--text); }
+
+  /* DOOR */
+  .door-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(0,180,255,0.1);
+  }
+  .door-ico { font-size: 20px; }
+  .door-lbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--text-dim); }
+  .door-st { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; }
+  .door-st.open   { color: var(--green); }
+  .door-st.closed { color: var(--red); }
+  .door-st.idle   { color: var(--text-dim); }
+  .door-count { margin-left: auto; font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--blue); }
+
+  /* LOG */
+  .log-card { border: 1.5px solid var(--border); background: var(--bg2); padding: 14px 16px; }
+  .log-body { max-height: 140px; overflow-y: auto; }
+  .log-row {
+    display: flex; gap: 10px; padding: 4px 0;
+    border-bottom: 1px solid rgba(0,180,255,0.05);
+    font-family: var(--mono); font-size: 10px;
+  }
+  .log-row:last-child { border-bottom: none; }
+  .log-t { color: #1e4060; min-width: 58px; flex-shrink: 0; }
+  .log-m.ok   { color: var(--green); }
+  .log-m.fail { color: var(--red); }
+  .log-m.info { color: var(--text-dim); }
+  .log-body::-webkit-scrollbar { width: 3px; }
+  .log-body::-webkit-scrollbar-thumb { background: rgba(0,180,255,0.2); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── HEADER ── -->
+  <div class="hdr">
+    <div class="hdr-logo">🔐</div>
+    <div>
+      <div class="hdr-title">COPAVE</div>
+      <div class="hdr-sub">CONTROL DE ACCESO QR</div>
+    </div>
+    <div class="hdr-right">
+      <div class="sys-dot" id="sys-dot"></div>
+      <div class="sys-lbl" id="sys-lbl">EN LÍNEA</div>
+    </div>
+  </div>
+
+  <!-- ── SCANNER ── -->
+  <div class="sec">ESCÁNER DE CÁMARA</div>
+  <div class="scanner-card">
+    <div class="video-box" id="video-box">
+      <div class="cam-ph" id="cam-ph">
+        <div class="ico">📷</div>
+        <div class="txt">TOCA PARA INICIAR CÁMARA</div>
+      </div>
+      <video id="qr-video" autoplay playsinline></video>
+      <canvas id="qr-canvas"></canvas>
+      <div class="scan-line" id="scan-line"></div>
+      <div class="detect-flash" id="detect-flash"></div>
+      <div class="corners"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="btn-start" onclick="startCamera()">INICIAR CÁMARA</button>
+      <button class="btn red" id="btn-stop" onclick="stopCamera()" disabled>DETENER</button>
+    </div>
+  </div>
+
+  <!-- ── MANUAL ── -->
+  <div class="sec">CÓDIGO MANUAL</div>
+  <div class="manual-card">
+    <div class="input-row">
+      <input class="code-input" id="manual" placeholder="Ingresa o pega código QR..."
+             onkeydown="if(event.key==='Enter')verify()">
+      <button class="btn" style="flex:0;padding:10px 20px" onclick="verify()">OK</button>
+    </div>
+  </div>
+
+  <!-- ── RESULT ── -->
+  <div class="sec">RESULTADO</div>
+  <div class="result-card" id="result-card">
+    <div class="result-idle" id="result-idle">[ ESPERANDO ESCANEO ]</div>
+    <div class="result-body" id="result-body">
+      <div class="badge-row">
+        <span class="badge checking" id="badge">VERIFICANDO...</span>
+        <span class="r-ts" id="r-ts"></span>
+      </div>
+      <div class="info-grid">
+        <div class="info-f"><label>CÓDIGO</label><span id="r-code">—</span></div>
+        <div class="info-f"><label>USUARIO</label><span id="r-user">—</span></div>
+        <div class="info-f"><label>ZONA</label><span id="r-zone">—</span></div>
+        <div class="info-f"><label>VÁLIDO HASTA</label><span id="r-expiry">—</span></div>
+      </div>
+      <div class="door-bar">
+        <span class="door-ico" id="door-ico">🚪</span>
+        <div>
+          <div class="door-lbl">ESTADO DE PUERTA</div>
+          <div class="door-st idle" id="door-st">EN ESPERA</div>
+        </div>
+        <div class="door-count" id="door-count" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LOG ── -->
+  <div class="sec">REGISTRO DE ACTIVIDAD</div>
+  <div class="log-card">
+    <div class="log-body" id="log"></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  CONFIGURACIÓN — solo el administrador edita esto
+// ═══════════════════════════════════════════════════
+const CONFIG = {
+  webhook:      "https://app.copave.org/webhook/qr-verify",  // ← Tu webhook de n8n
+  doorOpenSecs: 5,       // ← Segundos que la puerta permanece abierta
+  scanCooldown: 5000,    // ← Ms entre lecturas del mismo código (evita doble apertura)
+};
+// ═══════════════════════════════════════════════════
+
+let camStream = null, scanLoop = null, scanning = false;
+let doorInterval = null, doorSecsLeft = 0;
+let lastCode = '', lastScanTs = 0;
+
+// ── UTILIDADES ──────────────────────────────────────
+const ts = () => new Date().toLocaleTimeString('es-MX', {hour12: false});
+
+function log(msg, type = 'info') {
+  const el = document.getElementById('log');
+  const row = document.createElement('div');
+  row.className = 'log-row';
+  row.innerHTML = `<span class="log-t">${ts()}</span><span class="log-m ${type}">${msg}</span>`;
+  el.prepend(row);
+  if (el.children.length > 50) el.removeChild(el.lastChild);
+}
+
+// ── PUERTA ───────────────────────────────────────────
+function openDoor() {
+  clearInterval(doorInterval);
+  doorSecsLeft = CONFIG.doorOpenSecs;
+  setDoor('open', doorSecsLeft);
+  doorInterval = setInterval(() => {
+    doorSecsLeft--;
+    if (doorSecsLeft <= 0) { clearInterval(doorInterval); setDoor('idle'); }
+    else setDoor('open', doorSecsLeft);
+  }, 1000);
+}
+
+function setDoor(state, secs) {
+  const ico   = document.getElementById('door-ico');
+  const st    = document.getElementById('door-st');
+  const count = document.getElementById('door-count');
+  st.className = 'door-st';
+  if (state === 'open') {
+    ico.textContent = '🔓';
+    st.classList.add('open'); st.textContent = 'PUERTA ABIERTA';
+    count.style.display = 'block'; count.textContent = secs + 's';
+  } else if (state === 'denied') {
+    ico.textContent = '🔒';
+    st.classList.add('closed'); st.textContent = 'ACCESO BLOQUEADO';
+    count.style.display = 'none';
+    setTimeout(() => setDoor('idle'), 3000);
+  } else {
+    ico.textContent = '🚪';
+    st.classList.add('idle'); st.textContent = 'EN ESPERA';
+    count.style.display = 'none';
+  }
+}
+
+// ── FLASH VISUAL al detectar QR ──────────────────────
+function flashDetect() {
+  const f = document.getElementById('detect-flash');
+  f.classList.add('show');
+  setTimeout(() => f.classList.remove('show'), 150);
+}
+
+// ── VERIFICAR CÓDIGO ─────────────────────────────────
+async function verify(codeArg) {
+  const code = codeArg || document.getElementById('manual').value.trim();
+  if (!code) return;
+  if (!codeArg) document.getElementById('manual').value = '';
+
+  // UI — estado verificando
+  document.getElementById('result-idle').style.display = 'none';
+  const body = document.getElementById('result-body');
+  body.classList.add('show');
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('badge').className = 'badge checking';
+  document.getElementById('badge').textContent = 'VERIFICANDO...';
+  document.getElementById('r-ts').textContent = ts();
+  document.getElementById('r-code').textContent = code.length > 22 ? code.slice(0,22)+'…' : code;
+  document.getElementById('r-user').textContent   = '...';
+  document.getElementById('r-zone').textContent   = '...';
+  document.getElementById('r-expiry').textContent = '...';
+  setDoor('idle');
+  log('Código recibido: ' + code.slice(0, 20) + (code.length > 20 ? '…' : ''), 'info');
+
+  let result;
+  try {
+    const resp = await fetch(CONFIG.webhook, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ code, timestamp: new Date().toISOString() })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    result = await resp.json();
+  } catch (e) {
+    log('Error de conexión: ' + e.message, 'fail');
+    result = { valid: false, reason: 'Error al conectar con el servidor' };
+  }
+
+  // Aplicar resultado
+  const badge = document.getElementById('badge');
+  const card  = document.getElementById('result-card');
+  document.getElementById('r-user').textContent   = result.user   || '—';
+  document.getElementById('r-zone').textContent   = result.zone   || '—';
+  document.getElementById('r-expiry').textContent = result.expiry || '—';
+
+  if (result.valid) {
+    badge.className = 'badge granted'; badge.textContent = 'ACCESO CONCEDIDO';
+    card.className  = 'result-card granted';
+    openDoor();
+    log('CONCEDIDO — ' + (result.user || code.slice(0,16)), 'ok');
+  } else {
+    badge.className = 'badge denied'; badge.textContent = 'ACCESO DENEGADO';
+    card.className  = 'result-card denied';
+    setDoor('denied');
+    log('DENEGADO — ' + (result.reason || 'código inválido'), 'fail');
+  }
+}
+
+// ── CÁMARA ────────────────────────────────────────────
+async function startCamera() {
+  if (scanning) return;
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }
+    });
+    const v = document.getElementById('qr-video');
+    v.srcObject = camStream;
+    v.style.display = 'block';
+    document.getElementById('cam-ph').style.display  = 'none';
+    document.getElementById('scan-line').style.display = 'block';
+    document.getElementById('btn-start').disabled = true;
+    document.getElementById('btn-stop').disabled  = false;
+    scanning = true;
+    log('Cámara iniciada', 'info');
+    startScanLoop(v);
+  } catch (e) {
+    log('No se pudo acceder a la cámara: ' + e.message, 'fail');
+  }
+}
+
+function startScanLoop(video) {
+  const canvas = document.getElementById('qr-canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  scanLoop = setInterval(() => {
+    if (video.readyState < 2) return;
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const qr  = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+    if (qr && qr.data) {
+      const now = Date.now();
+      if (qr.data !== lastCode || now - lastScanTs > CONFIG.scanCooldown) {
+        lastCode = qr.data; lastScanTs = now;
+        flashDetect();
+        verify(qr.data);
+      }
+    }
+  }, 300);
+}
+
+function stopCamera() {
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  if (scanLoop)  { clearInterval(scanLoop); scanLoop = null; }
+  scanning = false;
+  const v = document.getElementById('qr-video');
+  v.style.display = 'none'; v.srcObject = null;
+  document.getElementById('cam-ph').style.display    = 'flex';
+  document.getElementById('scan-line').style.display = 'none';
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-stop').disabled  = true;
+  log('Cámara detenida', 'info');
+}
+
+// ── INIT ──────────────────────────────────────────────
+log('Sistema COPAVE iniciado', 'info');
+</script>
+</body>
+</html>
